@@ -425,7 +425,9 @@ static int nuc900_spi_probe(struct platform_device *pdev)
 		goto err_clk;
 	}
 
+#ifdef CONFIG_SPI_MFP
 	mfp_set_groupg(&pdev->dev, NULL);
+#endif
 	nuc900_init_spi(hw);
 
 	err = spi_bitbang_start(&hw->bitbang);
@@ -486,6 +488,6 @@ static struct platform_driver nuc900_spi_driver = {
 module_platform_driver(nuc900_spi_driver);
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
-MODULE_DESCRIPTION("nuc900 spi driver!");
+MODULE_DESCRIPTION("NUC700/NUC900 SPI driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:nuc900-spi");
