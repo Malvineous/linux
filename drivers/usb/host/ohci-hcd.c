@@ -1114,6 +1114,11 @@ MODULE_LICENSE ("GPL");
 #define EXYNOS_PLATFORM_DRIVER	exynos_ohci_driver
 #endif
 
+#if defined(CONFIG_ARCH_NUC700)
+#include "ohci-nuc700.c"
+#define PLATFORM_DRIVER		ohci_hcd_nuc700_driver
+#endif
+
 #ifdef CONFIG_USB_OHCI_HCD_OMAP1
 #include "ohci-omap.c"
 #define OMAP1_PLATFORM_DRIVER	ohci_hcd_omap_driver
