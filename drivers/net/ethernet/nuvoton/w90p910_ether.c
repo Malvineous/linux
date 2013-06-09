@@ -3,11 +3,18 @@
  *
  * Wan ZongShun <mcuos.com@gmail.com>
  *
+ * Copyright (C) 2013 Adam Nielsen <a.nielsen@shikadi.net>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation;version 2 of the License.
  *
  */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#define DRV_MODULE_NAME    "nuc900-emc"
+#define DRV_MODULE_VERSION "0.2"
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -19,9 +26,11 @@
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/gfp.h>
+#include <linux/interrupt.h>
 
-#define DRV_MODULE_NAME		"w90p910-emc"
-#define DRV_MODULE_VERSION	"0.1"
+#ifdef CONFIG_NUVOTON_USE_WBL
+#include <plat/wbl.h>
+#endif
 
 /* Ethernet MAC Registers */
 #define REG_CAMCMR		0x00
@@ -109,7 +118,7 @@
 #define PADDINGMODE		0x01
 
 /* fftcr controller bit */
-#define TXTHD 			(0x03 << 8)
+#define TXTHD				(0x03 << 8)
 #define BLENGTH			(0x01 << 20)
 
 /* global setting for driver */
@@ -575,7 +584,9 @@ static int w90p910_ether_close(struct net_device *dev)
 	netif_stop_queue(dev);
 
 	del_timer_sync(&ether->check_timer);
-	clk_disable(ether->rmiiclk);
+	if (ether->rmiiclk) {
+		clk_disable(ether->rmiiclk);
+	}
 	clk_disable(ether->clk);
 
 	free_irq(ether->txirq, dev);
@@ -814,7 +825,9 @@ static int w90p910_ether_open(struct net_device *dev)
 	w90p910_set_global_maccmd(dev);
 	w90p910_enable_rx(dev, 1);
 
-	clk_enable(ether->rmiiclk);
+	if (ether->rmiiclk) {
+		clk_enable(ether->rmiiclk);
+	}
 	clk_enable(ether->clk);
 
 	ether->rx_packets = 0x0;
@@ -926,17 +939,21 @@ static void __init get_mac_address(struct net_device *dev)
 
 	pdev = ether->pdev;
 
+#ifdef CONFIG_NUVOTON_USE_WBL
+	wbl_get_mac_address(addr);
+#else
 	addr[0] = 0x00;
 	addr[1] = 0x02;
 	addr[2] = 0xac;
 	addr[3] = 0x55;
 	addr[4] = 0x88;
 	addr[5] = 0xa8;
+#endif
 
 	if (is_valid_ether_addr(addr))
 		memcpy(dev->dev_addr, &addr, 0x06);
 	else
-		dev_err(&pdev->dev, "invalid mac address\n");
+		dev_err(&pdev->dev, "Invalid MAC address\n");
 }
 
 static int w90p910_ether_setup(struct net_device *dev)
@@ -975,6 +992,8 @@ static int w90p910_ether_probe(struct platform_device *pdev)
 	struct w90p910_ether *ether;
 	struct net_device *dev;
 	int error;
+
+	dev_info(&pdev->dev, "NUC700/NUC900 ethernet driver\n");
 
 	dev = alloc_etherdev(sizeof(struct w90p910_ether));
 	if (!dev)
@@ -1028,9 +1047,8 @@ static int w90p910_ether_probe(struct platform_device *pdev)
 
 	ether->rmiiclk = clk_get(&pdev->dev, "RMII");
 	if (IS_ERR(ether->rmiiclk)) {
-		dev_err(&pdev->dev, "failed to get ether clock\n");
-		error = PTR_ERR(ether->rmiiclk);
-		goto failed_put_clk;
+		dev_warn(&pdev->dev, "failed to get RMII clock, assuming NUC700\n");
+		ether->rmiiclk = NULL;
 	}
 
 	ether->pdev = pdev;
@@ -1039,15 +1057,17 @@ static int w90p910_ether_probe(struct platform_device *pdev)
 
 	error = register_netdev(dev);
 	if (error != 0) {
-		dev_err(&pdev->dev, "Regiter EMC w90p910 FAILED\n");
+		dev_err(&pdev->dev, "failed to register device\n");
 		error = -ENODEV;
 		goto failed_put_rmiiclk;
 	}
 
 	return 0;
+
 failed_put_rmiiclk:
-	clk_put(ether->rmiiclk);
-failed_put_clk:
+	if (ether->rmiiclk) {
+		clk_put(ether->rmiiclk);
+	}
 	clk_put(ether->clk);
 failed_free_rxirq:
 	free_irq(ether->rxirq, pdev);
@@ -1070,7 +1090,9 @@ static int w90p910_ether_remove(struct platform_device *pdev)
 
 	unregister_netdev(dev);
 
-	clk_put(ether->rmiiclk);
+	if (ether->rmiiclk) {
+		clk_put(ether->rmiiclk);
+	}
 	clk_put(ether->clk);
 
 	iounmap(ether->reg);
@@ -1098,7 +1120,6 @@ static struct platform_driver w90p910_ether_driver = {
 module_platform_driver(w90p910_ether_driver);
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
-MODULE_DESCRIPTION("w90p910 MAC driver!");
+MODULE_DESCRIPTION("NUC700/NUC900 ethernet driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:nuc900-emc");
-

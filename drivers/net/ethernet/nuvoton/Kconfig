@@ -5,7 +5,7 @@
 config NET_VENDOR_NUVOTON
 	bool "Nuvoton devices"
 	default y
-	depends on ARM && ARCH_W90X900
+	depends on ARM && (ARCH_NUC700 || ARCH_W90X900)
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -19,13 +19,13 @@ config NET_VENDOR_NUVOTON
 if NET_VENDOR_NUVOTON
 
 config W90P910_ETH
-	tristate "Nuvoton w90p910 Ethernet support"
-	depends on ARM && ARCH_W90X900
+	tristate "Nuvoton NUC700/NUC900 Ethernet support"
+	depends on ARM && (ARCH_NUC700 || ARCH_W90X900)
 	select PHYLIB
 	select NET_CORE
 	select MII
 	---help---
-	  Say Y here if you want to use built-in Ethernet ports
-	  on w90p910 processor.
+	  Say Y here if you want to use the built-in Ethernet ports
+	  on the NUC700/NUC900/W90P910 series of processors.
 
 endif # NET_VENDOR_NUVOTON
