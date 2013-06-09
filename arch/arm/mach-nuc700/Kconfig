@@ -1,0 +1,83 @@
+if ARCH_NUC700
+
+config CPU_NUC710
+	bool
+	help
+	  Support for NUC710 of Nuvoton NUC700 CPUs.
+
+config CPU_NUC740
+	bool
+	help
+	  Support for NUC740 of Nuvoton NUC700 CPUs.
+
+config CPU_NUC745
+	bool
+	help
+	  Support for NUC745 of Nuvoton NUC700 CPUs.
+
+menu "NUC700 boards"
+
+config MACH_NUC710EVB
+	bool "Nuvoton NUC710 evaluation board"
+	default y
+	select CPU_NUC710
+	select PLAT_NUVOTON
+	help
+	  Say Y here if you are using the Nuvoton NUC710EVB, or a similar board
+	  based on the NUC710 CPU.
+
+config MACH_NUC740EVB
+	bool "Nuvoton NUC740 evaluation board"
+	select CPU_NUC740
+	select PLAT_NUVOTON
+	help
+	  Say Y here if you are using the Nuvoton NUC740EVB, or a similar board
+	  based on the NUC740 CPU.
+
+config MACH_NUC745EVB
+	bool "Nuvoton NUC745 evaluation board"
+	select CPU_NUC745
+	select PLAT_NUVOTON
+	help
+	  Say Y here if you are using the Nuvoton NUC745EVB, or a similar board
+	  based on the NUC745 CPU.
+
+endmenu
+
+menu "NUC700 UART configuration"
+
+comment "UART0 is always enabled"
+
+config NUC700_UART1
+	bool "Enable UART1"
+	default n
+	depends on MACH_NUC710EVB || MACH_NUC740EVB || MACH_NUC745EVB
+	help
+	  Say Y here if you are using the Nuvoton NUC700EVB.
+
+config NUC700_UART1_CTSRTS
+	bool "Enable CTS/RTS on UART1 / Disable UART2"
+	default n
+	depends on NUC700_UART1
+	help
+	  Say Y here if you are not using UART2, and wish to use some of those
+	  pins as CTS/RTS signals on UART1 instead.
+
+config NUC700_UART2
+	bool "Enable UART2"
+	default n
+	depends on (MACH_NUC710EVB || MACH_NUC740EVB || MACH_NUC745EVB) && (!NUC700_UART1_CTSRTS)
+	help
+	  Say Y here if you are using the Nuvoton NUC700EVB.
+
+config NUC700_UART3
+	bool "Enable UART3 / Disable AC97"
+	default n
+	depends on MACH_NUC710EVB || MACH_NUC740EVB || MACH_NUC745EVB
+	help
+	  Say Y here if you are not using AC97 audio, and wish to use some of
+	  those pins as UART3 instead.
+
+endmenu
+
+endif

@@ -44,6 +44,10 @@ ifeq ($(CONFIG_ARCH_ACORN),y)
 OBJS		+= ll_char_wr.o font.o
 endif
 
+ifeq ($(CONFIG_ARCH_NUC700),y)
+OBJS		+= head-nuc700.o
+endif
+
 ifeq ($(CONFIG_ARCH_SHARK),y)
 OBJS		+= head-shark.o ofw-shark.o
 endif

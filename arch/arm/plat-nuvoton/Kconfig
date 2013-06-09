@@ -1,0 +1,22 @@
+#
+# Winbond/Nuvoton Platform configuration file
+#
+
+if PLAT_NUVOTON
+
+config NUVOTON_USE_WBL
+	bool "Nuvoton / Winbond bootloader support"
+	default y
+	help
+	  If your platform runs the Winbond/Nuvoton WBL bootloader, enabling
+	  this option will use the data set in the bootloader, such as
+	  the board's MAC address.
+
+	  It will also make each flash image (as shown in the bootloader)
+	  appear as a separate MTD partition, if MTD support is enabled.
+	  This will allow you to flash images through the bootloader and have
+	  them appear as corresponding /dev/mtdblockX block devices.
+
+	  Say N here if your board uses a different bootloader.
+
+endif
