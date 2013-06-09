@@ -15,6 +15,12 @@ config CPU_NUC745
 	help
 	  Support for NUC745 of Nuvoton NUC700 CPUs.
 
+config CACHE_NUC700
+	bool "Use internal cache management controller"
+	help
+	  The NUC700 has a private cache management controller.  If you
+	  experience strange bugs, you can disable the controller to help debug.
+
 menu "NUC700 boards"
 
 config MACH_NUC710EVB
