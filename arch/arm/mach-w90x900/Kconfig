@@ -3,23 +3,30 @@ if ARCH_W90X900
 config CPU_W90P910
 	bool
 	select SPI_MFP
+	select AC97_MFP
 	help
 	  Support for W90P910 of Nuvoton W90X900 CPUs.
 
 config CPU_NUC950
 	bool
 	select SPI_MFP
+	select AC97_MFP
 	help
 	  Support for NUCP950 of Nuvoton NUC900 CPUs.
 
 config CPU_NUC960
 	bool
 	select SPI_MFP
+	select AC97_MFP
 	help
 	  Support for NUCP960 of Nuvoton NUC900 CPUs.
 
 # Processor has multi-function pin for SPI
 config SPI_MFP
+	bool
+
+# Processor has multi-function pin for AC97
+config AC97_MFP
 	bool
 
 menu "W90P910 Machines"

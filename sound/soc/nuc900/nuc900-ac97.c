@@ -370,8 +370,10 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
 	if (ret)
 		goto out3;
 
-	/* enbale ac97 multifunction pin */
+#ifdef CONFIG_AC97_MFP
+	/* enable ac97 multifunction pin */
 	mfp_set_groupg(nuc900_audio->dev, NULL);
+#endif
 
 	return 0;
 
@@ -414,6 +416,6 @@ static struct platform_driver nuc900_ac97_driver = {
 module_platform_driver(nuc900_ac97_driver);
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
-MODULE_DESCRIPTION("NUC900 AC97 SoC driver!");
+MODULE_DESCRIPTION("NUC700/NUC900 AC97 SoC driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:nuc900-ac97");

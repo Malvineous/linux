@@ -1,11 +1,12 @@
 ##
-## NUC900 series AC97 API
+## NUC700/NUC900 series AC97 API
 ##
 config SND_SOC_NUC900
-	tristate "SoC Audio for NUC900 series"
-	depends on ARCH_W90X900
+	tristate "SoC Audio for NUC700/NUC900 series"
+	depends on ARCH_NUC700 || ARCH_W90X900
 	help
-	  This option enables support for AC97 mode on the NUC900 SoC.
+	  This option enables support for AC97 mode on the NUC700 and NUC900
+	  SoC.
 
 config SND_SOC_NUC900_AC97
 	tristate
@@ -18,10 +19,10 @@ config SND_SOC_NUC900_AC97
 ## Boards
 ##
 config SND_SOC_NUC900EVB
-	tristate "NUC900 AC97 support for demo board"
+	tristate "AC97 support for NUC700/NUC900 demo board"
 	depends on SND_SOC_NUC900
 	select SND_SOC_NUC900_AC97
 	select SND_SOC_AC97_CODEC
 	help
 	  Select this option to enable audio (AC97) on the
-	  NUC900 demoboard.
+	  NUC700/NUC900 demoboards.
