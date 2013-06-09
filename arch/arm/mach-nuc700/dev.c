@@ -264,7 +264,7 @@ void __init nuc700_board_init(void)
 		nuc700_spi_resource, ARRAY_SIZE(nuc700_spi_resource),
 		&nuc700_spiflash_data, sizeof(nuc700_spiflash_data));
 
-	platform_device_register_resndata(NULL, "nuc700-wdt", -1,
+	platform_device_register_resndata(NULL, "nuc900-wdt", -1,
 		nuc700_wdt_resource, ARRAY_SIZE(nuc700_wdt_resource), NULL, 0);
 
 	platform_device_register_resndata(NULL, "nuc700-i2c-p0", -1,

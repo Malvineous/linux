@@ -51,7 +51,7 @@ static struct clk_lookup nuc700_clkregs[] = {
 	DEF_CLKLOOK(&clk_uart0,  NULL, "uart0"),
 	DEF_CLKLOOK(&clk_timer,  NULL, "timer"),
 	DEF_CLKLOOK(&clk_ohci,   "nuc700-ohci", NULL),
-	DEF_CLKLOOK(&clk_wdt,    "nuc700-wdt", NULL),
+	DEF_CLKLOOK(&clk_wdt,    "nuc900-wdt", NULL),
 	DEF_CLKLOOK(&clk_emc,    "nuc900-emc", NULL),
 	DEF_CLKLOOK(&clk_lcd,    "nuc700-lcd", NULL),
 	DEF_CLKLOOK(&clk_sd,     "nuc700-sd", NULL),
